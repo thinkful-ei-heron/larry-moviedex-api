@@ -7,11 +7,12 @@ const Movies = require('./movies-data-small.json');
 
 const app = express();
 
-app.use(morgan('dev'));
+const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common';
+app.use(morgan(morganSetting));
 app.use(helmet());
 app.use(cors());
 
-//validates auth token
+/* Validate authorization token */
 app.use(function validateBearerToken(req, res, next) {
   const apiToken = process.env.API_TOKEN;
   const authToken = req.get('Authorization');
@@ -20,6 +21,16 @@ app.use(function validateBearerToken(req, res, next) {
   }
   next();
 });
+
+app.use((error, req, res, next) => {
+  let response
+  if (process.env.NODE_ENV === 'production') {
+    response = { error: { message: 'server error' }}
+  } else {
+    response = { error }
+  }
+  res.status(500).json(response)
+})
 
 app.get('/movies', (req, res) => {
   const {genre, country, avg_vote} = req.query;
@@ -47,8 +58,9 @@ app.get('/movies', (req, res) => {
     .json(results);
 });
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
-  console.log(`Server listening at http://localhost:${PORT}`);
+  if (process.env.NODE_ENV !== 'production')
+    console.log(`Server listening at http://localhost:${PORT}`);
 });

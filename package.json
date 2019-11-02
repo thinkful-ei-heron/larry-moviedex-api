@@ -1,5 +1,5 @@
 {
-  "name": "evan-larry-moviedexAPI",
+  "name": "moviedex-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,9 @@
     "url": "git+https://github.com/thinkful-ei-heron/evan-larry-moviedexAPI.git"
   },
   "keywords": [],
+  "engines": {
+    "node": "10.16.3"
+  },
   "author": "",
   "license": "ISC",
   "bugs": {
